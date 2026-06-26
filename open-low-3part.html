@@ -10,7 +10,7 @@
 /* ===== BODY ===== */
 body{
     margin:0;
-    font-family:'Segoe UI',Arial;
+    font-family:'Segoe UI',Arial,sans-serif;
     height:100vh;
     background:url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3")
     no-repeat center/cover;
@@ -20,10 +20,10 @@ body{
     color:white;
 }
 
-/* Dark overlay */
+/* Dark Overlay */
 body::before{
     content:"";
-    position:absolute;
+    position:fixed;
     inset:0;
     background:rgba(0,0,0,0.75);
     z-index:-1;
@@ -32,16 +32,15 @@ body::before{
 /* ===== CARD ===== */
 .container{
     backdrop-filter:blur(15px);
-    background:rgba(255,255,255,0.07);
+    background:rgba(255,255,255,0.08);
     border-radius:18px;
-    padding:45px 55px;
+    padding:40px;
     text-align:center;
-    box-shadow:0 0 40px rgba(0,0,0,0.7);
+    box-shadow:0 0 35px rgba(0,0,0,0.7);
     border:1px solid rgba(255,255,255,0.2);
     width:420px;
 }
 
-/* TITLE */
 h1{
     margin-bottom:25px;
 }
@@ -50,7 +49,7 @@ h1{
 input{
     width:85%;
     padding:14px;
-    margin:12px 0;
+    margin:10px 0;
     border:none;
     border-radius:8px;
     font-size:16px;
@@ -66,7 +65,9 @@ button{
     font-size:17px;
     cursor:pointer;
     background:linear-gradient(45deg,#00e676,#00c853);
+    color:white;
     font-weight:bold;
+    transition:.3s;
 }
 
 button:hover{
@@ -74,7 +75,7 @@ button:hover{
     box-shadow:0 0 20px #00e676;
 }
 
-/* RESULT BOX */
+/* RESULT */
 .result{
     margin-top:25px;
     padding:18px;
@@ -85,6 +86,12 @@ button:hover{
 
 .result h3{
     color:gold;
+    margin-top:0;
+}
+
+.result p{
+    font-size:18px;
+    margin:12px 0;
 }
 
 </style>
@@ -108,6 +115,7 @@ button:hover{
 
 <h3>Calculation Result</h3>
 
+<p id="differenceValue"></p>
 <p id="zValue"></p>
 <p id="firstSR"></p>
 <p id="secondSR"></p>
@@ -116,59 +124,45 @@ button:hover{
 
 </div>
 
-
 <script>
 
 function calculate(){
 
-    let x = parseFloat(document.getElementById("openPrice").value);
-    let y = parseFloat(document.getElementById("lowPrice").value);
+    let open = parseFloat(document.getElementById("openPrice").value);
+    let low = parseFloat(document.getElementById("lowPrice").value);
 
-    if(isNaN(x) || isNaN(y)){
-        alert("Please enter both values");
+    if(isNaN(open) || isNaN(low)){
+        alert("Please enter both values.");
         return;
     }
 
-    /* POSITIVE DIFFERENCE USING IF CONDITION */
-    let difference;
+    // Difference
+    let difference = Math.abs(open - low);
 
-    if(x > y){
-        difference = x - y;
-    }
-    else if(y > x){
-        difference = y - x;
-    }
-    else{
-        difference = 0;
-    }
+    // Divide into 3 Parts
+    let part = difference / 3;
 
-    /* FORMULA */
-    let z = difference / 3;
+    // Highest Value
+    let high = Math.max(open, low);
 
-    if(x > y){
-        a=x-z;
-    }
-    else if(y > x){
-        a=y-z;
-    }
-    else{
-        difference = 0;
-    }
+    // Levels
+    let first = high - part;
+    let second = high - (part * 2);
 
-    let second = a - z;
+    // Show Result
+    document.getElementById("resultBox").style.display = "block";
 
-    /* SHOW RESULT */
-    document.getElementById("resultBox").style.display="block";
+    document.getElementById("differenceValue").innerHTML =
+        "Difference = <b>" + difference.toFixed(2) + "</b>";
 
     document.getElementById("zValue").innerHTML =
-        "Difference  = <b>"+z.toFixed(2)+"</b>";
+        "1 Part (Difference ÷ 3) = <b>" + part.toFixed(2) + "</b>";
 
     document.getElementById("firstSR").innerHTML =
-        "Support / Resistance 1st Value = <b>"+a.toFixed(2)+"</b>";
+        "1st Support / Resistance = <b>" + first.toFixed(2) + "</b>";
 
-    document.getElementById("SecondSR").innerHTML =
-        "Support / Resistance 2nd value = <b>"+second.toFixed(2)+"</b>";
-
+    document.getElementById("secondSR").innerHTML =
+        "2nd Support / Resistance = <b>" + second.toFixed(2) + "</b>";
 }
 
 </script>
